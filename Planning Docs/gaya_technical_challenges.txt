@@ -1,0 +1,41 @@
+# Technical Challenges Solved by Gaya.ai
+
+## 1. Dynamic Website Selectors
+**Problem**: Websites use dynamic selectors that change with each page refresh
+**Solution**: Fine-tuned LLM that detects HTML structure changes and adapts in real-time
+
+## 2. Multiple Entity Handling
+**Problem**: Forms with multiple similar entries (e.g., multiple vehicles, each with make/model/VIN)
+**Solution**: AI understands context and correctly maps multiple instances to appropriate fields
+
+## 3. Navigating iFrames
+**Problem**: Many insurance portals use embedded iFrames (webpages within webpages)
+**Solution**: Advanced DOM traversal techniques to penetrate nested web environments
+
+## 4. Dependent Dropdowns
+**Problem**: Cascading dropdowns that require selecting one value before others load (e.g., State → City)
+**Solution**: AI understands dependencies and waits for async API calls to complete
+
+## 5. Non-Standard HTML
+**Problem**: Many carrier portals don't follow HTML best practices
+**Solution**: Robust parsing that handles inconsistent HTML structures
+
+## 6. Non-Unique Selector IDs
+**Problem**: Framework-generated sites often lack unique IDs for elements
+**Solution**: Uses semantic understanding and relative positioning to identify elements
+
+## 7. Inconsistent Dropdown Values
+**Problem**: Different forms represent the same values differently
+**Solution**: LLM translates and normalizes values across systems
+
+## 8. Field Semantic Mapping
+**Problem**: Same data has different field names across portals ("DOB" vs "Date of Birth" vs "Birth Date")
+**Solution**: Vector embeddings and semantic understanding to match equivalent fields
+
+## 9. Data Format Conversion
+**Problem**: Different systems expect different formats (dates, phone numbers, addresses)
+**Solution**: AI automatically reformats data to match target system requirements
+
+## 10. State Management
+**Problem**: Tracking what's been copied and where it should be pasted
+**Solution**: Intelligent clipboard that maintains context and data structure
