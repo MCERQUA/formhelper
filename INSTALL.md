@@ -1,8 +1,8 @@
-# GAYA Chrome Extension - Installation Guide
+# FormHelper Chrome Extension - Installation Guide
 
 ## Quick Start
 
-The GAYA Chrome extension has been built and is ready to install!
+The FormHelper Chrome extension has been built and is ready to install!
 
 ### Installation Steps
 
@@ -19,9 +19,9 @@ The GAYA Chrome extension has been built and is ready to install!
    - Select the folder and click "Select Folder"
 
 4. **Verify Installation**
-   - You should see "GAYA - AI Form Helper" in your extensions list
-   - The extension icon (purple "G") should appear in your toolbar
-   - If not visible, click the puzzle piece icon and pin GAYA
+   - You should see "FormHelper - AI Form Helper" in your extensions list
+   - The extension icon should appear in your toolbar
+   - If not visible, click the puzzle piece icon and pin FormHelper
 
 ### Testing the Extension
 
@@ -29,7 +29,7 @@ The GAYA Chrome extension has been built and is ready to install!
 
 1. Go to any website with a form (e.g., a contact form, registration page)
 2. Fill out some fields in the form
-3. Click the GAYA extension icon in your toolbar
+3. Click the FormHelper extension icon in your toolbar
 4. Click "Super Copy" button
 5. You should see a green notification "Clipboard filled!"
 6. The extension badge should show "1" indicating clipboard has data
@@ -37,14 +37,14 @@ The GAYA Chrome extension has been built and is ready to install!
 #### Test Super Paste
 
 1. Navigate to a different form on another page
-2. Click the GAYA extension icon
+2. Click the FormHelper extension icon
 3. Click "Super Paste" button
 4. The form should auto-fill with your clipboard data
 5. Check that fields are matched intelligently (e.g., "First Name" → "Given Name")
 
 #### Test See Clipboard
 
-1. Click the GAYA extension icon
+1. Click the FormHelper extension icon
 2. Click "See Clipboard" button
 3. The side panel opens showing your extracted data
 4. Try:
@@ -91,7 +91,7 @@ To make changes to the extension:
 1. Edit source files in `src/` folder
 2. Run `npm run build`
 3. Go to `chrome://extensions/`
-4. Click the reload icon on the GAYA extension card
+4. Click the reload icon on the FormHelper extension card
 
 ### Project Structure
 
@@ -136,4 +136,4 @@ dist/                    # Built extension (load this in Chrome)
 5. Add document upload feature
 6. Implement PDF form filling
 
-Enjoy using GAYA!
+Enjoy using FormHelper!

@@ -1,4 +1,4 @@
-// Core data structures for GAYA extension
+// Core data structures for FormHelper extension
 
 export interface Field {
   id: string;
@@ -100,12 +100,15 @@ export interface DefaultValue {
 
 // Message types for communication between scripts
 export type MessageAction =
+  | 'ping'
   | 'extractData'
   | 'fillForm'
   | 'openSidePanel'
   | 'updateClipboard'
   | 'clearClipboard'
-  | 'searchRecords';
+  | 'searchRecords'
+  | 'aiMapFields'
+  | 'showOverlay';
 
 export interface Message {
   action: MessageAction;

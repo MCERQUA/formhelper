@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { ClipboardData } from '../shared/types';
+import { APIClient } from '../shared/api-client';
+import { ErrorHandler } from '../shared/error-handler';
 
 const Popup: React.FC = () => {
   const [clipboardData, setClipboardData] = useState<ClipboardData | null>(null);
@@ -23,21 +25,17 @@ const Popup: React.FC = () => {
       const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
       if (!tab?.id) {
-        setMessage('Error: No active tab');
-        setIsLoading(false);
-        return;
+        throw new Error('No active tab');
       }
 
-      const response = await chrome.tabs.sendMessage(tab.id, { action: 'extractData' });
+      const data = await APIClient.sendToContentScript(tab.id, { action: 'extractData' });
 
-      if (response.success) {
-        setClipboardData(response.data);
-        setMessage('Clipboard filled!');
-      } else {
-        setMessage(`Error: ${response.error}`);
-      }
+      setClipboardData(data);
+      setMessage('Clipboard filled!');
+
     } catch (error) {
-      setMessage(`Error: ${(error as Error).message}`);
+      const appError = ErrorHandler.handle(error, 'SuperCopy');
+      setMessage(appError.userMessage);
     } finally {
       setIsLoading(false);
       setTimeout(() => setMessage(''), 3000);
@@ -57,24 +55,19 @@ const Popup: React.FC = () => {
       const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
 
       if (!tab?.id) {
-        setMessage('Error: No active tab');
-        setIsLoading(false);
-        return;
+        throw new Error('No active tab');
       }
 
-      const response = await chrome.tabs.sendMessage(tab.id, {
+      const result = await APIClient.sendToContentScript(tab.id, {
         action: 'fillForm',
         data: clipboardData
       });
 
-      if (response.success) {
-        const result = response.data;
-        setMessage(`Filled ${result.filledFields}/${result.totalFields} fields`);
-      } else {
-        setMessage(`Error: ${response.error}`);
-      }
+      setMessage(`Filled ${result.filledFields}/${result.totalFields} fields`);
+
     } catch (error) {
-      setMessage(`Error: ${(error as Error).message}`);
+      const appError = ErrorHandler.handle(error, 'SuperPaste');
+      setMessage(appError.userMessage);
     } finally {
       setIsLoading(false);
       setTimeout(() => setMessage(''), 3000);
@@ -118,7 +111,7 @@ const Popup: React.FC = () => {
               Clipboard has {getTotalFields()} fields
             </span>
             <button style={styles.clearBtn} onClick={handleClearClipboard}>
-              🗑️
+              Clear
             </button>
           </>
         ) : (
@@ -135,7 +128,7 @@ const Popup: React.FC = () => {
           onClick={handleSuperCopy}
           disabled={isLoading}
         >
-          📋 Form Copy
+          Copy Form Data
         </button>
 
         <button
@@ -143,7 +136,7 @@ const Popup: React.FC = () => {
           onClick={handleSuperPaste}
           disabled={isLoading || !clipboardData}
         >
-          📥 Form Paste
+          Paste to Form
         </button>
 
         <button
@@ -151,7 +144,27 @@ const Popup: React.FC = () => {
           onClick={handleOpenSidePanel}
           disabled={!clipboardData}
         >
-          👁 See Clipboard
+          View Clipboard
+        </button>
+
+        <button
+          style={{ ...styles.button, ...styles.secondaryButton }}
+          onClick={async () => {
+            try {
+              const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+              if (tab?.id) {
+                await APIClient.sendToContentScript(tab.id, { action: 'showOverlay' });
+                setMessage('Field selector shown');
+              }
+            } catch (error) {
+              const appError = ErrorHandler.handle(error, 'ShowOverlay');
+              setMessage(appError.userMessage);
+            } finally {
+              setTimeout(() => setMessage(''), 3000);
+            }
+          }}
+        >
+          Select Fields
         </button>
       </div>
 
@@ -184,10 +197,9 @@ const styles = {
   },
   logo: {
     margin: '0',
-    fontSize: '24px',
-    fontWeight: 'bold' as const,
-    color: '#7c3aed',
-    letterSpacing: '2px'
+    fontSize: '20px',
+    fontWeight: '600' as const,
+    color: '#1e3a8a'
   },
   tagline: {
     margin: '4px 0 0 0',
@@ -214,7 +226,7 @@ const styles = {
   },
   statusIcon: {
     fontSize: '16px',
-    color: '#10b981',
+    color: '#059669',
     marginRight: '8px'
   },
   statusIconEmpty: {
@@ -231,8 +243,9 @@ const styles = {
     background: 'none',
     border: 'none',
     cursor: 'pointer',
-    fontSize: '16px',
-    padding: '4px'
+    fontSize: '12px',
+    padding: '4px 8px',
+    color: '#64748b'
   },
   buttons: {
     display: 'flex',
@@ -250,12 +263,13 @@ const styles = {
     width: '100%'
   },
   primaryButton: {
-    backgroundColor: '#7c3aed',
+    backgroundColor: '#1e3a8a',
     color: 'white'
   },
   secondaryButton: {
-    backgroundColor: '#f3f4f6',
-    color: '#374151'
+    backgroundColor: '#f1f5f9',
+    color: '#0f172a',
+    border: '1px solid #cbd5e1'
   },
   info: {
     marginTop: '16px',

@@ -1,8 +1,8 @@
-# GAYA Chrome Extension - Project Summary
+# FormHelper Chrome Extension - Project Summary
 
 ## ✅ Project Completed Successfully!
 
-The GAYA (Get All Your Applications) Chrome extension has been successfully built and is ready to use!
+The FormHelper Chrome extension has been successfully built and is ready to use!
 
 ## What Was Built
 
@@ -114,16 +114,16 @@ The GAYA (Get All Your Applications) Chrome extension has been successfully buil
 2. **Test Super Copy:**
    - Go to any form on the web
    - Fill out some fields
-   - Click GAYA icon → Super Copy
+   - Click FormHelper icon → Super Copy
    - Notification confirms data extracted
 
 3. **Test Super Paste:**
    - Go to a different form
-   - Click GAYA icon → Super Paste
+   - Click FormHelper icon → Super Paste
    - Form auto-fills with clipboard data
 
 4. **View Clipboard:**
-   - Click GAYA icon → See Clipboard
+   - Click FormHelper icon → See Clipboard
    - Side panel shows all data
    - Edit, toggle, search fields
 
@@ -218,7 +218,7 @@ ISC
 
 ## Summary
 
-**The GAYA Chrome extension is fully functional and ready to use!**
+**The FormHelper Chrome extension is fully functional and ready to use!**
 
 All core features have been implemented:
 - Extract form data from any website

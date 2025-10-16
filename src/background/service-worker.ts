@@ -1,12 +1,14 @@
 // Background Service Worker - handles extension lifecycle and storage
 
 import { Message, MessageResponse, ClipboardData } from '../shared/types';
+import { aiEngine } from './ai-engine';
+import { logger } from '../shared/logger';
 
-console.log('GAYA Background Service Worker loaded');
+console.log('FormHelper Background Service Worker loaded');
 
 // Listen for extension installation
 chrome.runtime.onInstalled.addListener(() => {
-  console.log('GAYA Extension installed');
+  console.log('FormHelper Extension installed');
 
   // Initialize storage
   chrome.storage.local.set({
@@ -44,8 +46,26 @@ async function handleMessage(message: Message, sender: chrome.runtime.MessageSen
     case 'openSidePanel':
       return await handleOpenSidePanel(sender.tab?.id);
 
+    case 'aiMapFields':
+      return await handleAIMapFields(message.data);
+
     default:
       return { success: false, error: 'Unknown action' };
+  }
+}
+
+async function handleAIMapFields(data: any): Promise<MessageResponse> {
+  try {
+    logger.info('AI mapping requested');
+    const { sourceFields, targetFields } = data;
+
+    const mappings = await aiEngine.mapFields(sourceFields, targetFields);
+
+    logger.info(`AI mapped ${mappings.length} fields`);
+    return { success: true, data: mappings };
+  } catch (error) {
+    logger.error('AI mapping error:', error);
+    return { success: false, error: (error as Error).message };
   }
 }
 
@@ -137,4 +157,4 @@ chrome.commands?.onCommand.addListener(async (command) => {
   }
 });
 
-console.log('GAYA Background ready');
+console.log('FormHelper Background ready');

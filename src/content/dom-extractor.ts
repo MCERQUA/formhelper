@@ -191,7 +191,7 @@ export class FormExtractor {
   }
 
   private generateFieldId(element: HTMLElement): string {
-    return element.id || element.getAttribute('name') || `gaya_field_${Date.now()}_${Math.random()}`;
+    return element.id || element.getAttribute('name') || `formhelper_field_${Date.now()}_${Math.random()}`;
   }
 
   private getXPath(element: HTMLElement): string {

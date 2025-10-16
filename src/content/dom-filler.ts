@@ -1,6 +1,7 @@
 // DOM Filler Engine - fills forms with clipboard data
 
 import { ClipboardData, FormField, FieldMapping, FillResult, FieldResult } from '../shared/types';
+import { logger } from '../shared/logger';
 
 export class FormFiller {
   async fillForm(clipboardData: ClipboardData): Promise<FillResult> {
@@ -98,6 +99,84 @@ export class FormFiller {
   }
 
   private async createMappings(clipboardData: ClipboardData, targetFields: FormField[]): Promise<FieldMapping[]> {
+    try {
+      // Try AI mapping first
+      const aiMappings = await this.createAIMappings(clipboardData, targetFields);
+      if (aiMappings && aiMappings.length > 0) {
+        logger.info(`Using AI mappings: ${aiMappings.length} fields mapped`);
+        return aiMappings;
+      }
+    } catch (error) {
+      logger.warn('AI mapping failed, falling back to simple matching:', error);
+    }
+
+    // Fallback to simple matching
+    return this.createSimpleMappings(clipboardData, targetFields);
+  }
+
+  private async createAIMappings(clipboardData: ClipboardData, targetFields: FormField[]): Promise<FieldMapping[]> {
+    // Prepare source fields for AI
+    const sourceFields = [];
+    for (const entity of clipboardData.entities) {
+      for (const field of entity.fields) {
+        if (field.toggleState !== false) {
+          sourceFields.push({
+            id: field.id,
+            label: field.label,
+            name: field.name,
+            type: field.type,
+            value: field.value,
+            semanticType: field.semanticType
+          });
+        }
+      }
+    }
+
+    // Prepare target fields
+    const targetFieldsForAI = targetFields.map(f => ({
+      id: f.id,
+      label: f.label,
+      name: f.name,
+      type: f.type,
+      required: f.required
+    }));
+
+    // Request AI mapping from background script
+    const response = await chrome.runtime.sendMessage({
+      action: 'aiMapFields',
+      data: {
+        sourceFields,
+        targetFields: targetFieldsForAI
+      }
+    });
+
+    if (!response.success) {
+      throw new Error(response.error || 'AI mapping failed');
+    }
+
+    // Convert AI mappings to our format
+    const aiMappings = response.data || [];
+    const mappings: FieldMapping[] = [];
+
+    for (const aiMapping of aiMappings) {
+      const sourceField = sourceFields.find(f => f.id === aiMapping.sourceFieldId);
+      const targetField = targetFields.find(f => f.id === aiMapping.targetFieldId);
+
+      if (sourceField && targetField && aiMapping.confidence > 0.6) {
+        mappings.push({
+          sourceField: sourceField.label,
+          sourceValue: sourceField.value,
+          targetField,
+          transformation: aiMapping.transformation || this.determineTransformation(sourceField.value, targetField.type),
+          confidence: aiMapping.confidence
+        });
+      }
+    }
+
+    return mappings;
+  }
+
+  private createSimpleMappings(clipboardData: ClipboardData, targetFields: FormField[]): FieldMapping[] {
     const mappings: FieldMapping[] = [];
 
     // Flatten clipboard entities into a field map

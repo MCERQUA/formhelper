@@ -149,10 +149,10 @@ const SidePanel: React.FC = () => {
 
       <div style={styles.actions}>
         <button style={styles.actionBtn} onClick={handleSuperPaste}>
-          📥 Form Paste
+          Paste to Form
         </button>
         <button style={{ ...styles.actionBtn, ...styles.secondaryBtn }} onClick={handleClearClipboard}>
-          🗑️ Clear
+          Clear Clipboard
         </button>
       </div>
 
@@ -300,10 +300,9 @@ const styles = {
   },
   logo: {
     margin: '0 0 8px 0',
-    fontSize: '24px',
-    fontWeight: 'bold' as const,
-    color: '#7c3aed',
-    letterSpacing: '2px'
+    fontSize: '20px',
+    fontWeight: '600' as const,
+    color: '#1e3a8a'
   },
   statusBadge: {
     display: 'inline-block',
@@ -333,7 +332,7 @@ const styles = {
   actionBtn: {
     flex: 1,
     padding: '10px 16px',
-    backgroundColor: '#7c3aed',
+    backgroundColor: '#1e3a8a',
     color: 'white',
     border: 'none',
     borderRadius: '6px',
@@ -423,7 +422,7 @@ const styles = {
   fieldInput: {
     flex: 1,
     padding: '4px 8px',
-    border: '1px solid #7c3aed',
+    border: '1px solid #1e3a8a',
     borderRadius: '4px',
     fontSize: '14px'
   },
@@ -445,7 +444,7 @@ const styles = {
   },
   toggleBtn: {
     padding: '4px 8px',
-    backgroundColor: '#7c3aed',
+    backgroundColor: '#1e3a8a',
     color: 'white',
     border: 'none',
     borderRadius: '4px',

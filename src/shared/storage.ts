@@ -1,8 +1,8 @@
-// IndexedDB storage manager for GAYA
+// IndexedDB storage manager for FormHelper
 
 import { ClipboardData, SavedRecord, DefaultValue, UserPreferences } from './types';
 
-const DB_NAME = 'GayaDB';
+const DB_NAME = 'FormHelperDB';
 const DB_VERSION = 1;
 
 class StorageManager {

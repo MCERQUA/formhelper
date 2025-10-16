@@ -1,4 +1,4 @@
-# GAYA - AI Form Helper Chrome Extension
+# FormHelper - AI Form Helper Chrome Extension
 
 An intelligent Chrome extension that uses AI to extract, store, and fill form data across websites with a persistent interactive clipboard.
 
@@ -71,14 +71,14 @@ formhelper/
 
 1. Navigate to a webpage with a form
 2. Fill out the form (or use a form that's already filled)
-3. Click the GAYA extension icon
+3. Click the FormHelper extension icon
 4. Click "Super Copy"
 5. Data is extracted and saved to clipboard
 
 ### Super Paste
 
 1. Navigate to a different webpage with a form
-2. Click the GAYA extension icon
+2. Click the FormHelper extension icon
 3. Click "Super Paste"
 4. Form fields are automatically filled
 

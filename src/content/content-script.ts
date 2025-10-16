@@ -2,12 +2,20 @@
 
 import { formExtractor } from './dom-extractor';
 import { formFiller } from './dom-filler';
+import { fieldOverlay } from './field-overlay';
 import { Message, MessageResponse, ClipboardData } from '../shared/types';
+import { logger } from '../shared/logger';
 
-console.log('GAYA Content Script loaded');
+logger.info('FormHelper Content Script loaded');
 
 // Listen for messages from background script or popup
 chrome.runtime.onMessage.addListener((message: Message, _sender, sendResponse) => {
+  // Handle ping immediately
+  if (message.action === 'ping') {
+    sendResponse({ success: true });
+    return true;
+  }
+
   handleMessage(message)
     .then(response => sendResponse(response))
     .catch(error => sendResponse({ success: false, error: error.message }));
@@ -23,8 +31,47 @@ async function handleMessage(message: Message): Promise<MessageResponse> {
     case 'fillForm':
       return await handleFillForm(message.data);
 
+    case 'showOverlay':
+      return await handleShowOverlay();
+
     default:
       return { success: false, error: 'Unknown action' };
+  }
+}
+
+async function handleShowOverlay(): Promise<MessageResponse> {
+  try {
+    logger.info('Showing field overlay...');
+
+    const extractedData = await formExtractor.extractPageData();
+
+    if (extractedData.entities.length === 0) {
+      return {
+        success: false,
+        error: 'No form fields found on this page'
+      };
+    }
+
+    // Flatten all fields from entities
+    const allFields = extractedData.entities.flatMap(entity =>
+      entity.fields.map(field => ({
+        id: field.id,
+        element: document.evaluate(field.xpath, document, null, XPathResult.FIRST_ORDERED_NODE_TYPE, null).singleNodeValue as HTMLElement,
+        label: field.label,
+        value: field.value,
+        selector: field.xpath
+      }))
+    ).filter(f => f.element);
+
+    fieldOverlay.show(allFields);
+
+    return { success: true, data: { fieldsCount: allFields.length } };
+  } catch (error) {
+    logger.error('Error showing overlay:', error);
+    return {
+      success: false,
+      error: (error as Error).message
+    };
   }
 }
 
@@ -110,12 +157,12 @@ async function handleFillForm(clipboardData: ClipboardData): Promise<MessageResp
 
 function showNotification(message: string, type: 'success' | 'error' | 'warning' | 'loading') {
   // Remove existing notification
-  const existing = document.getElementById('gaya-notification');
+  const existing = document.getElementById('formhelper-notification');
   if (existing) existing.remove();
 
   // Create notification element
   const notification = document.createElement('div');
-  notification.id = 'gaya-notification';
+  notification.id = 'formhelper-notification';
   notification.textContent = message;
 
   // Styling
@@ -139,9 +186,9 @@ function showNotification(message: string, type: 'success' | 'error' | 'warning'
   });
 
   // Add animation keyframes
-  if (!document.getElementById('gaya-notification-styles')) {
+  if (!document.getElementById('formhelper-notification-styles')) {
     const style = document.createElement('style');
-    style.id = 'gaya-notification-styles';
+    style.id = 'formhelper-notification-styles';
     style.textContent = `
       @keyframes slideIn {
         from {
@@ -169,4 +216,4 @@ function showNotification(message: string, type: 'success' | 'error' | 'warning'
 }
 
 // Initialize
-console.log('GAYA ready on:', window.location.href);
+logger.info('FormHelper ready on:', window.location.href);
