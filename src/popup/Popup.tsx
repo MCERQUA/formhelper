@@ -93,8 +93,19 @@ const Popup: React.FC = () => {
   return (
     <div style={styles.container}>
       <div style={styles.header}>
-        <h1 style={styles.logo}>FormHelper</h1>
-        <p style={styles.tagline}>Smart Form Assistant</p>
+        <div style={styles.headerTop}>
+          <div>
+            <h1 style={styles.logo}>FormHelper</h1>
+            <p style={styles.tagline}>Smart Form Assistant</p>
+          </div>
+          <button
+            style={styles.settingsBtn}
+            onClick={() => chrome.runtime.openOptionsPage()}
+            title="Settings"
+          >
+            ⚙️
+          </button>
+        </div>
       </div>
 
       {message && (
@@ -190,10 +201,23 @@ const styles = {
     backgroundColor: '#ffffff'
   },
   header: {
-    textAlign: 'center' as const,
     marginBottom: '16px',
     paddingBottom: '16px',
     borderBottom: '1px solid #e5e7eb'
+  },
+  headerTop: {
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start'
+  },
+  settingsBtn: {
+    background: 'none',
+    border: 'none',
+    fontSize: '20px',
+    cursor: 'pointer',
+    padding: '4px',
+    opacity: 0.6,
+    transition: 'opacity 0.2s'
   },
   logo: {
     margin: '0',
