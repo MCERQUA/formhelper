@@ -4,7 +4,8 @@ interface APIConfig {
   provider: 'openai' | 'anthropic';
   openaiKey: string;
   anthropicKey: string;
-  model: string;
+  openaiModel: string;
+  anthropicModel: string;
 }
 
 export default function Options() {
@@ -12,7 +13,8 @@ export default function Options() {
     provider: 'openai',
     openaiKey: '',
     anthropicKey: '',
-    model: 'gpt-4o-mini'
+    openaiModel: 'gpt-5-nano',
+    anthropicModel: 'claude-3-5-sonnet-20241022'
   });
 
   const [testing, setTesting] = useState(false);
@@ -96,8 +98,8 @@ export default function Options() {
             onChange={(e) => setConfig({ ...config, provider: e.target.value as any })}
             style={styles.select}
           >
-            <option value="openai">OpenAI (GPT-4o)</option>
-            <option value="anthropic">Anthropic (Claude 3.5)</option>
+            <option value="openai">OpenAI (GPT-4o Mini recommended)</option>
+            <option value="anthropic">Anthropic (Claude 3.5 Sonnet)</option>
           </select>
         </div>
 
@@ -128,39 +130,56 @@ export default function Options() {
             <div style={styles.field}>
               <label style={styles.label}>Model</label>
               <select
-                value={config.model}
-                onChange={(e) => setConfig({ ...config, model: e.target.value })}
+                value={config.openaiModel}
+                onChange={(e) => setConfig({ ...config, openaiModel: e.target.value })}
                 style={styles.select}
               >
-                <option value="gpt-4o">GPT-4o (Best quality)</option>
-                <option value="gpt-4o-mini">GPT-4o Mini (Recommended - Faster & cheaper)</option>
+                <option value="gpt-5-nano">gpt-5-nano (Cheapest - $0.05/$0.40 per 1M tokens)</option>
+                <option value="gpt-5-mini">gpt-5-mini (Fast - $0.25/$2.00 per 1M tokens)</option>
+                <option value="gpt-5">gpt-5 (Best quality - $1.25/$10.00 per 1M tokens)</option>
+                <option value="gpt-4o-mini">gpt-4o-mini ($0.15/$0.60 per 1M tokens)</option>
+                <option value="gpt-4o">gpt-4o ($2.50/$10 per 1M tokens)</option>
               </select>
             </div>
           </>
         )}
 
         {config.provider === 'anthropic' && (
-          <div style={styles.field}>
-            <label style={styles.label}>Anthropic API Key</label>
-            <input
-              type="password"
-              value={config.anthropicKey}
-              onChange={(e) => setConfig({ ...config, anthropicKey: e.target.value })}
-              placeholder="sk-ant-..."
-              style={styles.input}
-            />
-            <p style={styles.hint}>
-              Get your API key from{' '}
-              <a
-                href="https://console.anthropic.com/"
-                target="_blank"
-                rel="noopener noreferrer"
-                style={styles.link}
+          <>
+            <div style={styles.field}>
+              <label style={styles.label}>Anthropic API Key</label>
+              <input
+                type="password"
+                value={config.anthropicKey}
+                onChange={(e) => setConfig({ ...config, anthropicKey: e.target.value })}
+                placeholder="sk-ant-..."
+                style={styles.input}
+              />
+              <p style={styles.hint}>
+                Get your API key from{' '}
+                <a
+                  href="https://console.anthropic.com/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={styles.link}
+                >
+                  Anthropic Console
+                </a>
+              </p>
+            </div>
+
+            <div style={styles.field}>
+              <label style={styles.label}>Model</label>
+              <select
+                value={config.anthropicModel}
+                onChange={(e) => setConfig({ ...config, anthropicModel: e.target.value })}
+                style={styles.select}
               >
-                Anthropic Console
-              </a>
-            </p>
-          </div>
+                <option value="claude-3-5-sonnet-20241022">Claude 3.5 Sonnet (Latest - $3/$15 per 1M tokens)</option>
+                <option value="claude-3-5-haiku-20241022">Claude 3.5 Haiku (Fastest - $0.80/$4 per 1M tokens)</option>
+              </select>
+            </div>
+          </>
         )}
 
         {testResult && (
